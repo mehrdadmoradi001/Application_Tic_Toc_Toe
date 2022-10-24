@@ -14,6 +14,14 @@ class _HomeState extends State<Home> {
 
   int filledBoxes = 0;
 
+  //mige bazi natije dare ya na
+  bool gameIsResult = false;
+
+  int scoreX = 0;
+  int scoreO = 0;
+
+  String winnerTitle = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +34,8 @@ class _HomeState extends State<Home> {
           IconButton(
             onPressed: () {
               clearGame();
+              scoreX = 0;
+              scoreO = 0;
             },
             icon: Icon(Icons.refresh),
           ),
@@ -37,12 +47,34 @@ class _HomeState extends State<Home> {
           children: [
             SizedBox(height: 20.0),
             getScoreBored(),
-            SizedBox(height: 40.0),
+            SizedBox(height: 20.0),
+            getResultButton(),
+            SizedBox(height: 20.0),
             getGridView(),
             getTurn(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget getResultButton() {
+    return Visibility(
+      visible: gameIsResult,
+      child: OutlinedButton(
+          onPressed: () {
+            setState(() {
+              gameIsResult = false;
+              clearGame();
+            });
+          },
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: Colors.white, width: 2),
+          ),
+          child: Text(
+            '$winnerTitle, Play Again! ',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          )),
     );
   }
 
@@ -89,7 +121,9 @@ class _HomeState extends State<Home> {
   }
 
   void tapped(int index) {
-    print('$index');
+    if(gameIsResult){
+      return;
+    }
     setState(() {
       if (xOroList[index] != '') {
         return;
@@ -108,8 +142,9 @@ class _HomeState extends State<Home> {
 
     checkWinner();
 
+
     if (filledBoxes == 9) {
-      print('game is equal');
+      setResult('', 'Draw');
     }
   }
 
@@ -117,49 +152,49 @@ class _HomeState extends State<Home> {
     if (xOroList[0] == xOroList[1] &&
         xOroList[0] == xOroList[2] &&
         xOroList[0] != '') {
-      print('Winner is ' + xOroList[0]);
+      setResult(xOroList[0], 'Winner is ' + xOroList[0]);
       return;
     }
     if (xOroList[3] == xOroList[4] &&
         xOroList[3] == xOroList[5] &&
         xOroList[3] != '') {
-      print('Winner is ' + xOroList[3]);
+      setResult(xOroList[3], 'Winner is ' + xOroList[3]);
       return;
     }
     if (xOroList[6] == xOroList[7] &&
         xOroList[6] == xOroList[8] &&
         xOroList[6] != '') {
-      print('Winner is ' + xOroList[6]);
+      setResult(xOroList[6], 'Winner is ' + xOroList[6]);
       return;
     }
     if (xOroList[0] == xOroList[3] &&
         xOroList[0] == xOroList[6] &&
         xOroList[0] != '') {
-      print('Winner is ' + xOroList[0]);
+      setResult(xOroList[0], 'Winner is ' + xOroList[0]);
       return;
     }
     if (xOroList[1] == xOroList[4] &&
         xOroList[1] == xOroList[7] &&
         xOroList[1] != '') {
-      print('Winner is ' + xOroList[1]);
+      setResult(xOroList[1], 'Winner is ' + xOroList[1]);
       return;
     }
     if (xOroList[2] == xOroList[5] &&
         xOroList[2] == xOroList[8] &&
         xOroList[2] != '') {
-      print('Winner is ' + xOroList[2]);
+      setResult(xOroList[2], 'Winner is ' + xOroList[2]);
       return;
     }
     if (xOroList[0] == xOroList[4] &&
         xOroList[0] == xOroList[8] &&
         xOroList[0] != '') {
-      print('Winner is ' + xOroList[0]);
+      setResult(xOroList[0], 'Winner is ' + xOroList[0]);
       return;
     }
     if (xOroList[2] == xOroList[4] &&
         xOroList[2] == xOroList[6] &&
         xOroList[2] != '') {
-      print('Winner is ' + xOroList[2]);
+      setResult(xOroList[2], 'Winner is ' + xOroList[2]);
       return;
     }
   }
@@ -180,7 +215,7 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Text(
-                  '0',
+                  '$scoreO',
                   style: TextStyle(color: Colors.white, fontSize: 25.0),
                 ),
               ),
@@ -200,7 +235,7 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Text(
-                  '0',
+                  '$scoreX',
                   style: TextStyle(color: Colors.white, fontSize: 25.0),
                 ),
               ),
@@ -211,9 +246,25 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void clearGame(){
+  void setResult(String winner, String title) {
     setState(() {
-      for(var i=0; i < xOroList.length; i++){
+      gameIsResult = true;
+      winnerTitle = title;
+
+      if (winner == 'X') {
+        scoreX = scoreX + 1;
+      } else if (winner == 'O') {
+        scoreO = scoreO + 1;
+      } else {
+        scoreO = scoreO + 1;
+        scoreX = scoreX + 1;
+      }
+    });
+  }
+
+  void clearGame() {
+    setState(() {
+      for (var i = 0; i < xOroList.length; i++) {
         xOroList[i] = '';
         filledBoxes = 0;
       }
