@@ -12,6 +12,8 @@ class _HomeState extends State<Home> {
 
   List<String> xOroList = ['', '', '', '', '', '', '', '', ''];
 
+  int filledBoxes = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +22,14 @@ class _HomeState extends State<Home> {
         title: Text('Tic Tac Toe'),
         centerTitle: true,
         backgroundColor: Colors.grey[900],
+        actions: [
+          IconButton(
+            onPressed: () {
+              clearGame();
+            },
+            icon: Icon(Icons.refresh),
+          ),
+        ],
       ),
       backgroundColor: Colors.grey[900],
       body: SafeArea(
@@ -64,7 +74,11 @@ class _HomeState extends State<Home> {
               child: Center(
                 child: Text(
                   xOroList[index],
-                  style: TextStyle(fontSize: 40, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          xOroList[index] == 'X' ? Colors.white : Colors.red),
                 ),
               ),
             ),
@@ -77,15 +91,77 @@ class _HomeState extends State<Home> {
   void tapped(int index) {
     print('$index');
     setState(() {
-      if (isTurnO && xOroList[index] == '') {
+      if (xOroList[index] != '') {
+        return;
+      }
+
+      if (isTurnO) {
         xOroList[index] = 'O';
-        isTurnO = false;
-      }
-      if (!isTurnO && xOroList[index] == '') {
+        filledBoxes = filledBoxes + 1;
+      } else {
         xOroList[index] = 'X';
-        isTurnO = true;
+        filledBoxes = filledBoxes + 1;
       }
+
+      isTurnO = !isTurnO;
     });
+
+    checkWinner();
+
+    if (filledBoxes == 9) {
+      print('game is equal');
+    }
+  }
+
+  void checkWinner() {
+    if (xOroList[0] == xOroList[1] &&
+        xOroList[0] == xOroList[2] &&
+        xOroList[0] != '') {
+      print('Winner is ' + xOroList[0]);
+      return;
+    }
+    if (xOroList[3] == xOroList[4] &&
+        xOroList[3] == xOroList[5] &&
+        xOroList[3] != '') {
+      print('Winner is ' + xOroList[3]);
+      return;
+    }
+    if (xOroList[6] == xOroList[7] &&
+        xOroList[6] == xOroList[8] &&
+        xOroList[6] != '') {
+      print('Winner is ' + xOroList[6]);
+      return;
+    }
+    if (xOroList[0] == xOroList[3] &&
+        xOroList[0] == xOroList[6] &&
+        xOroList[0] != '') {
+      print('Winner is ' + xOroList[0]);
+      return;
+    }
+    if (xOroList[1] == xOroList[4] &&
+        xOroList[1] == xOroList[7] &&
+        xOroList[1] != '') {
+      print('Winner is ' + xOroList[1]);
+      return;
+    }
+    if (xOroList[2] == xOroList[5] &&
+        xOroList[2] == xOroList[8] &&
+        xOroList[2] != '') {
+      print('Winner is ' + xOroList[2]);
+      return;
+    }
+    if (xOroList[0] == xOroList[4] &&
+        xOroList[0] == xOroList[8] &&
+        xOroList[0] != '') {
+      print('Winner is ' + xOroList[0]);
+      return;
+    }
+    if (xOroList[2] == xOroList[4] &&
+        xOroList[2] == xOroList[6] &&
+        xOroList[2] != '') {
+      print('Winner is ' + xOroList[2]);
+      return;
+    }
   }
 
   Widget getScoreBored() {
@@ -133,5 +209,14 @@ class _HomeState extends State<Home> {
         ),
       ],
     );
+  }
+
+  void clearGame(){
+    setState(() {
+      for(var i=0; i < xOroList.length; i++){
+        xOroList[i] = '';
+        filledBoxes = 0;
+      }
+    });
   }
 }
