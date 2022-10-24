@@ -199,6 +199,7 @@ class _HomeState extends State<Home> {
     }
   }
 
+
   Widget getScoreBored() {
     return Row(
       children: [
